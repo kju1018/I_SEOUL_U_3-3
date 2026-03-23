@@ -1,7 +1,7 @@
 import { create } from "zustand"
-import { createPost } from "../../../../entities/post/api/postApi"
-import { CreatePostPayload } from "../../../../entities/post/model/types"
-import { usePostStore } from "../../../../entities/post/model/usePostStore"
+import { createPost } from "../../../entities/post/api/postApi"
+import { CreatePostPayload } from "../../../entities/post/model/types"
+import { usePostStore } from "../../../entities/post/model/usePostStore"
 
 interface AddPostState {
   showAddDialog: boolean

@@ -2,8 +2,11 @@ import { useEffect, useState } from "react"
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { usePostList } from "../widget/PostList/model/usePostList"
-import { useAddPostStore } from "../features/post/addPost/model/useAddPostStore"
-import { AddPostDialog } from "../features/post/addPost/ui/AddPostDialog"
+import { useAddPostStore } from "../features/addPost/model/useAddPostStore"
+import { useTagStore } from "../entities/tag/model/useTagStore"
+import { AddPostDialog } from "../features/addPost/ui/AddPostDialog"
+import { useEditPostStore } from "../features/editPost/model/useEditPostStore"
+import { EditPostDialog } from "../features/editPost/ui/EditPostDialog"
 import {
   Button,
   Card,
@@ -40,11 +43,10 @@ const PostsManager = () => {
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
-  const [selectedPost, setSelectedPost] = useState(null)
+  const { selectedPost, setSelectedPost, setShowEditDialog } = useEditPostStore()
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
-  const [showEditDialog, setShowEditDialog] = useState(false)
-  const [tags, setTags] = useState([])
+  const { tags, fetchTags } = useTagStore()
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
@@ -70,17 +72,6 @@ const PostsManager = () => {
   // 게시물 가져오기
   const fetchPosts = () => {
     fetchPostsFromHook(limit, skip)
-  }
-
-  // 태그 가져오기
-  const fetchTags = async () => {
-    try {
-      const response = await fetch("/api/posts/tags")
-      const data = await response.json()
-      setTags(data)
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error)
-    }
   }
 
   // 게시물 검색
@@ -127,22 +118,6 @@ const PostsManager = () => {
       console.error("태그별 게시물 가져오기 오류:", error)
     }
     setLoading(false)
-  }
-
-  // 게시물 업데이트
-  const updatePost = async () => {
-    try {
-      const response = await fetch(`/api/posts/${selectedPost.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selectedPost),
-      })
-      const data = await response.json()
-      setPosts(posts.map((post) => (post.id === data.id ? data : post)))
-      setShowEditDialog(false)
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error)
-    }
   }
 
   // 게시물 삭제
@@ -531,27 +506,7 @@ const PostsManager = () => {
       <AddPostDialog />
 
       {/* 게시물 수정 대화상자 */}
-      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>게시물 수정</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Input
-              placeholder="제목"
-              value={selectedPost?.title || ""}
-              onChange={(e) => setSelectedPost({ ...selectedPost, title: e.target.value })}
-            />
-            <Textarea
-              rows={15}
-              placeholder="내용"
-              value={selectedPost?.body || ""}
-              onChange={(e) => setSelectedPost({ ...selectedPost, body: e.target.value })}
-            />
-            <Button onClick={updatePost}>게시물 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <EditPostDialog />
 
       {/* 댓글 추가 대화상자 */}
       <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
