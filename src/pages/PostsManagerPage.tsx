@@ -528,7 +528,7 @@ const PostsManager = () => {
       </CardContent>
 
       {/* 게시물 추가 대화상자 */}
-      <AddPostDialog onPostAdded={(newPostData) => setPosts([newPostData, ...posts])} />
+      <AddPostDialog />
 
       {/* 게시물 수정 대화상자 */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>

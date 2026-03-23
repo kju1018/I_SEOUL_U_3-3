@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea, Button } from "../../../../components"
 import { useAddPostStore } from "../model/useAddPostStore"
 
-export const AddPostDialog = ({ onPostAdded }: { onPostAdded: (post: any) => void }) => {
+export const AddPostDialog = () => {
   const { showAddDialog, setShowAddDialog, newPost, setNewPost, addPost, loading } = useAddPostStore()
 
   return (
@@ -28,7 +28,7 @@ export const AddPostDialog = ({ onPostAdded }: { onPostAdded: (post: any) => voi
             value={newPost.userId}
             onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
           />
-          <Button disabled={loading} onClick={() => addPost(onPostAdded)}>
+          <Button disabled={loading} onClick={addPost}>
             게시물 추가
           </Button>
         </div>
