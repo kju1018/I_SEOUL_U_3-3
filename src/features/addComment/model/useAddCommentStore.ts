@@ -1,6 +1,6 @@
 import { create } from "zustand"
-import { addCommentApi } from "../../../../entities/comment/api/commentApi"
-import { useCommentStore } from "../../../../entities/comment/model/useCommentStore"
+import { addCommentApi } from "../../../entities/comment/api/commentApi"
+import { useCommentStore } from "../../../entities/comment/model/useCommentStore"
 
 interface AddCommentState {
   showAddCommentDialog: boolean

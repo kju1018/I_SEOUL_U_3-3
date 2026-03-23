@@ -1,7 +1,7 @@
 import { create } from "zustand"
-import { updateCommentApi } from "../../../../entities/comment/api/commentApi"
-import { useCommentStore } from "../../../../entities/comment/model/useCommentStore"
-import { Comment } from "../../../../entities/comment/model/types"
+import { updateCommentApi } from "../../../entities/comment/api/commentApi"
+import { useCommentStore } from "../../../entities/comment/model/useCommentStore"
+import { Comment } from "../../../entities/comment/model/types"
 
 interface EditCommentState {
   showEditCommentDialog: boolean

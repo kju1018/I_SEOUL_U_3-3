@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, Textarea, Button } from "../../../../components"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, Textarea, Button } from "../../../components"
 import { useAddCommentStore } from "../model/useAddCommentStore"
 
 export const AddCommentDialog = () => {

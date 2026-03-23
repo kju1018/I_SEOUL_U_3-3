@@ -7,12 +7,12 @@ import { useTagStore } from "../entities/tag/model/useTagStore"
 import { useCommentStore } from "../entities/comment/model/useCommentStore"
 import { AddPostDialog } from "../features/addPost/ui/AddPostDialog"
 import { useEditPostStore } from "../features/editPost/model/useEditPostStore"
-import { useAddCommentStore } from "../features/comment/addComment/model/useAddCommentStore"
-import { AddCommentDialog } from "../features/comment/addComment/ui/AddCommentDialog"
-import { useEditCommentStore } from "../features/comment/editComment/model/useEditCommentStore"
-import { EditCommentDialog } from "../features/comment/editComment/ui/EditCommentDialog"
-import { useDeleteComment } from "../features/comment/deleteComment/model/useDeleteComment"
-import { useLikeComment } from "../features/comment/likeComment/model/useLikeComment"
+import { useAddCommentStore } from "../features/addComment/model/useAddCommentStore"
+import { AddCommentDialog } from "../features/addComment/ui/AddCommentDialog"
+import { useEditCommentStore } from "../features/editComment/model/useEditCommentStore"
+import { EditCommentDialog } from "../features/editComment/ui/EditCommentDialog"
+import { useDeleteComment } from "../features/deleteComment/model/useDeleteComment"
+import { useLikeComment } from "../features/likeComment/model/useLikeComment"
 import { EditPostDialog } from "../features/editPost/ui/EditPostDialog"
 import { useDeletePost } from "../features/deletePost/model/useDeletePost"
 import {
@@ -46,7 +46,7 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const { posts, setPosts, total, setTotal, loading, setLoading, fetchPosts: fetchPostsFromHook } = usePostList()
+  const { posts, total, loading, fetchPosts: fetchPostsFromHook, searchPosts: searchPostsHook, fetchPostsByTag: fetchPostsByTagHook } = usePostList()
   const { setShowAddDialog } = useAddPostStore()
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
@@ -84,49 +84,21 @@ const PostsManager = () => {
   }
 
   // 게시물 검색
-  const searchPosts = async () => {
+  const searchPosts = () => {
     if (!searchQuery) {
       fetchPosts()
       return
     }
-    setLoading(true)
-    try {
-      const response = await fetch(`/api/posts/search?q=${searchQuery}`)
-      const data = await response.json()
-      setPosts(data.posts)
-      setTotal(data.total)
-    } catch (error) {
-      console.error("게시물 검색 오류:", error)
-    }
-    setLoading(false)
+    searchPostsHook(searchQuery)
   }
 
   // 태그별 게시물 가져오기
-  const fetchPostsByTag = async (tag) => {
+  const fetchPostsByTag = (tag) => {
     if (!tag || tag === "all") {
       fetchPosts()
       return
     }
-    setLoading(true)
-    try {
-      const [postsResponse, usersResponse] = await Promise.all([
-        fetch(`/api/posts/tag/${tag}`),
-        fetch("/api/users?limit=0&select=username,image"),
-      ])
-      const postsData = await postsResponse.json()
-      const usersData = await usersResponse.json()
-
-      const postsWithUsers = postsData.posts.map((post) => ({
-        ...post,
-        author: usersData.users.find((user) => user.id === post.userId),
-      }))
-
-      setPosts(postsWithUsers)
-      setTotal(postsData.total)
-    } catch (error) {
-      console.error("태그별 게시물 가져오기 오류:", error)
-    }
-    setLoading(false)
+    fetchPostsByTagHook(tag)
   }
 
 

@@ -1,6 +1,6 @@
 import { useState } from "react"
-import { deleteCommentApi } from "../../../../entities/comment/api/commentApi"
-import { useCommentStore } from "../../../../entities/comment/model/useCommentStore"
+import { deleteCommentApi } from "../../../entities/comment/api/commentApi"
+import { useCommentStore } from "../../../entities/comment/model/useCommentStore"
 
 export const useDeleteComment = () => {
   const [loading, setLoading] = useState(false)

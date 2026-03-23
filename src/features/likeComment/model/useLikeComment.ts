@@ -1,6 +1,6 @@
 import { useState } from "react"
-import { likeCommentApi } from "../../../../entities/comment/api/commentApi"
-import { useCommentStore } from "../../../../entities/comment/model/useCommentStore"
+import { likeCommentApi } from "../../../entities/comment/api/commentApi"
+import { useCommentStore } from "../../../entities/comment/model/useCommentStore"
 
 export const useLikeComment = () => {
   const [loading, setLoading] = useState(false)
