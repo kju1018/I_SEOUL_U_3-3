@@ -14,6 +14,8 @@ import { EditCommentDialog } from "../features/editComment/ui/EditCommentDialog"
 import { useDeleteComment } from "../features/deleteComment/model/useDeleteComment"
 import { useLikeComment } from "../features/likeComment/model/useLikeComment"
 import { EditPostDialog } from "../features/editPost/ui/EditPostDialog"
+import { useUserDetailStore } from "../features/userDetail/model/useUserDetailStore"
+import { UserDetailModal } from "../features/userDetail/ui/UserDetailModal"
 import { useDeletePost } from "../features/deletePost/model/useDeletePost"
 import {
   Button,
@@ -37,7 +39,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  Textarea,
 } from "../components"
 
 const PostsManager = () => {
@@ -62,9 +63,8 @@ const PostsManager = () => {
   const { setSelectedComment, setShowEditCommentDialog } = useEditCommentStore()
   const { deleteComment } = useDeleteComment()
   const { likeComment } = useLikeComment()
+  const { openUserModal } = useUserDetailStore()
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
-  const [showUserModal, setShowUserModal] = useState(false)
-  const [selectedUser, setSelectedUser] = useState(null)
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -108,18 +108,6 @@ const PostsManager = () => {
     setSelectedPost(post)
     fetchComments(post.id)
     setShowPostDetailDialog(true)
-  }
-
-  // 사용자 모달 열기
-  const openUserModal = async (user) => {
-    try {
-      const response = await fetch(`/api/users/${user.id}`)
-      const userData = await response.json()
-      setSelectedUser(userData)
-      setShowUserModal(true)
-    } catch (error) {
-      console.error("사용자 정보 가져오기 오류:", error)
-    }
   }
 
   useEffect(() => {
@@ -388,16 +376,12 @@ const PostsManager = () => {
         </div>
       </CardContent>
 
-      {/* 게시물 추가 대화상자 */}
       <AddPostDialog />
 
-      {/* 게시물 수정 대화상자 */}
       <EditPostDialog />
 
-      {/* 댓글 추가 대화상자 */}
       <AddCommentDialog />
 
-      {/* 댓글 수정 대화상자 */}
       <EditCommentDialog />
 
       {/* 게시물 상세 보기 대화상자 */}
@@ -413,39 +397,7 @@ const PostsManager = () => {
         </DialogContent>
       </Dialog>
 
-      {/* 사용자 모달 */}
-      <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>사용자 정보</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <img src={selectedUser?.image} alt={selectedUser?.username} className="w-24 h-24 rounded-full mx-auto" />
-            <h3 className="text-xl font-semibold text-center">{selectedUser?.username}</h3>
-            <div className="space-y-2">
-              <p>
-                <strong>이름:</strong> {selectedUser?.firstName} {selectedUser?.lastName}
-              </p>
-              <p>
-                <strong>나이:</strong> {selectedUser?.age}
-              </p>
-              <p>
-                <strong>이메일:</strong> {selectedUser?.email}
-              </p>
-              <p>
-                <strong>전화번호:</strong> {selectedUser?.phone}
-              </p>
-              <p>
-                <strong>주소:</strong> {selectedUser?.address?.address}, {selectedUser?.address?.city},{" "}
-                {selectedUser?.address?.state}
-              </p>
-              <p>
-                <strong>직장:</strong> {selectedUser?.company?.name} - {selectedUser?.company?.title}
-              </p>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <UserDetailModal />
     </Card>
   )
 }

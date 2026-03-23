@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea, Button } from "../../../../components"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea, Button } from "../../../components"
 import { useAddPostStore } from "../model/useAddPostStore"
 
 export const AddPostDialog = () => {
